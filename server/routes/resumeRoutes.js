@@ -52,6 +52,8 @@ router.post(
                 fs.createReadStream(filePath)
             );
 
+            console.log("AI URL HIT");
+
             const response = await axios.post(
                 "https://ai-resume-checker-1-1wzs.onrender.com/analyze",
                 formData,
