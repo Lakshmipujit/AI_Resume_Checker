@@ -10,6 +10,8 @@ function App() {
 
   const [showRegister, setShowRegister] = useState(false);
 
+  console.log("Token in App.js:", token);
+
   if (token) {
     return <UploadResume />;
   }
