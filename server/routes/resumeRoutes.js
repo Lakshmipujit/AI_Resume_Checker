@@ -2,6 +2,8 @@ const express = require("express");
 const multer = require("multer");
 const axios = require("axios");
 const path = require("path");
+const FormData = require("form-data");
+const fs = require("fs");
 
 const Resume = require("../models/Resume");
 const authMiddleware = require("../middleware/authMiddleware");
@@ -21,7 +23,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
 router.post(
     "/upload",
     authMiddleware,
@@ -31,14 +32,18 @@ router.post(
 
         try {
 
+            if (!req.file) {
+
+                return res.status(400).json({
+                    message: "No file uploaded"
+                });
+            }
+
             const filePath = path.join(
                 __dirname,
                 "..",
                 req.file.path
             );
-
-            const FormData = require("form-data");
-            const fs = require("fs");
 
             const formData = new FormData();
 
@@ -55,7 +60,7 @@ router.post(
                 }
             );
 
-            await Resume.create({
+            const savedResume = await Resume.create({
 
                 user: req.user.id,
 
@@ -70,6 +75,8 @@ router.post(
 
             res.json({
 
+                message: "Resume uploaded successfully",
+
                 score:
                     response.data.score,
 
@@ -78,10 +85,14 @@ router.post(
 
                 missing_skills:
                     response.data.missing_skills,
+
+                resume:
+                    savedResume
             });
 
         } catch (err) {
 
+            console.log("UPLOAD ERROR:");
             console.log(err);
 
             res.status(500).json({
@@ -90,7 +101,6 @@ router.post(
         }
     }
 );
-
 
 router.get(
     "/my-resumes",
