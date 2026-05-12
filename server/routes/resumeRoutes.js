@@ -38,7 +38,7 @@ router.post(
             );
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/analyze",
+                "https://ai-resume-checker-1-1wzs.onrender.com",
                 {
                     filePath,
                 }
