@@ -1,6 +1,6 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, UploadFile, File
 import pdfplumber
+import tempfile
 
 app = FastAPI()
 
@@ -14,18 +14,27 @@ required_skills = {
     "java": 10
 }
 
-
-class ResumeRequest(BaseModel):
-    filePath: str
-
+@app.get("/")
+def home():
+    return {"message": "FastAPI running"}
 
 @app.post("/analyze")
-async def analyze_resume(data: ResumeRequest):
+async def analyze_resume(file: UploadFile = File(...)):
+
+    temp = tempfile.NamedTemporaryFile(delete=False)
+
+    content = await file.read()
+
+    temp.write(content)
+
+    temp.close()
 
     text = ""
 
-    with pdfplumber.open(data.filePath) as pdf:
+    with pdfplumber.open(temp.name) as pdf:
+
         for page in pdf.pages:
+
             extracted = page.extract_text()
 
             if extracted:
