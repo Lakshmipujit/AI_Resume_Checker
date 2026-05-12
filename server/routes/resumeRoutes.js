@@ -37,10 +37,21 @@ router.post(
                 req.file.path
             );
 
+            const FormData = require("form-data");
+            const fs = require("fs");
+
+            const formData = new FormData();
+
+            formData.append(
+                "file",
+                fs.createReadStream(filePath)
+            );
+
             const response = await axios.post(
-                "http://127.0.0.1:8000/analyze",
+                "https://ai-resume-checker-1-1wzs.onrender.com",
+                formData,
                 {
-                    filePath,
+                    headers: formData.getHeaders(),
                 }
             );
 
