@@ -53,7 +53,7 @@ router.post(
             );
 
             const response = await axios.post(
-                "https://ai-resume-checker-1-1wzs.onrender.com",
+                "https://ai-resume-checker-1-1wzs.onrender.com/analyze",
                 formData,
                 {
                     headers: formData.getHeaders(),
